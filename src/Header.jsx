@@ -23,21 +23,24 @@ const Header = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <header className="flex items-center justify-between bg-white p-4 border-b-2 border-orange-500" style={{ paddingBottom: '0px', paddingTop: '0px' }}>
-      <img src="/favicon.png" alt="Logo" className="h-12" />
+      <div className="flex items-center">
+        <img src="/favicon.png" alt="Logo" className="h-12" />
+        <span className="text-orange-500 text-xl ml-2">Multi-Convert</span>
+      </div>
       <div className="flex items-center">
         <nav className="flex items-center">
-          <a href="/" className="text-orange-500">Home</a>
+          <a href="/" className="font-bold">Home</a>
           <div className="h-6 border-l border-orange-500 mx-2"></div>
           <div className="relative" ref={dropdownRef}>
-            <button className="text-orange-500" onClick={toggleDropdown}>
+            <button className="font-bold" onClick={toggleDropdown}>
               Convert <i className="fas fa-chevron-down ml-1"></i>
             </button>
             <div className={`absolute bg-white shadow-md mt-4 border border-orange-500 ${dropdownOpen ? 'block' : 'hidden'}`} style={{ marginLeft: '-90px', width: '21rem' }}>
               <div className="flex flex-wrap">
-                <a href="/convert-pdf" className="block w-1/2 px-4 py-2 text-orange-500 hover:bg-gray-100 border-r border-orange-500">Convert Document</a>
-                <a href="/convert-images" className="block w-1/2 px-4 py-2 text-orange-500 hover:bg-gray-100">Convert Images</a>
-                <a href="/convert-music" className="block w-1/2 px-4 py-2 text-orange-500 hover:bg-gray-100 border-r border-orange-500">Convert Music</a>
-                <a href="/convert-videos" className="block w-1/2 px-4 py-2 text-orange-500 hover:bg-gray-100">Convert Videos</a>
+                <a href="/convert-document" className="block w-1/2 px-4 py-2 hover:bg-gray-100 border-r border-orange-500">Convert Document</a>
+                <a href="/convert-images" className="block w-1/2 px-4 py-2 hover:bg-gray-100">Convert Images</a>
+                <a href="/convert-music" className="block w-1/2 px-4 py-2 hover:bg-gray-100 border-r border-orange-500">Convert Music</a>
+                <a href="/convert-videos" className="block w-1/2 px-4 py-2 hover:bg-gray-100">Convert Videos</a>
               </div>
             </div>
           </div>

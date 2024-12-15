@@ -3,18 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "assert": "^2.1.0",
     "autoprefixer": "^10.4.20",
+    "buffer": "^6.0.3",
+    "cloudconvert": "^2.3.7",
     "cra-template": "1.2.0",
+    "crypto-browserify": "^3.12.1",
+    "docx": "^9.1.0",
+    "https-browserify": "^1.0.0",
+    "mammoth": "^1.8.0",
+    "os-browserify": "^0.3.0",
+    "pdf-lib": "^1.17.1",
     "postcss": "^8.4.49",
+    "pptxgenjs": "^3.12.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-router-dom": "^7.0.2",
     "react-scripts": "^5.0.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
     "tailwindcss": "^3.4.16",
+    "url": "^0.11.4",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "webpack serve --config webpack.config.js react-scripts start",
+    "build": "webpack --config webpack.config.js react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -36,5 +50,8 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "webpack-cli": "^5.1.4"
+  }
 }

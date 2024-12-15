@@ -2,12 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.App {
+  flex: 1;
+}
+
+.footer {
+  flex-shrink: 0;
+}
+
 .App {
   @apply text-center;
 }
 
 .App-header {
-  @apply flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+  @apply flex flex-col items-center justify-start bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+  padding-top: 1rem; /* Add padding to the top */
 }
 
 .App-gif {
@@ -16,4 +37,35 @@
 
 .App-link {
   @apply text-blue-500;
+}
+
+.dark-mode {
+  background-color: #1a202c; /* Tailwind's gray-900 */
+  color: #a0aec0; /* Tailwind's gray-400 */
+}
+
+.light-mode {
+  background-color: #f7fafc; /* Tailwind's gray-100 */
+  color: #2d3748; /* Tailwind's gray-800 */
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

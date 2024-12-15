@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './index.css';
 import App from './App';
 import Header from './Header';
+import Footer from './Footer';
+import ConvertDocument from './ConvertDocument';
 import reportWebVitals from './reportWebVitals';
 
 const Root = () => {
@@ -21,10 +24,14 @@ const Root = () => {
   };
 
   return (
-    <>
+    <Router>
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      <App darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-    </>
+      <Routes>
+        <Route path="/" element={<App darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+        <Route path="/convert-document" element={<ConvertDocument darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>} />
+      </Routes>
+      <Footer darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+    </Router>
   );
 };
 

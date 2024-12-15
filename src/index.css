@@ -25,7 +25,7 @@ body.dark .border-b-2 {
 }
 
 body.dark .text-orange-500 {
-  @apply text-white;
+  @apply text-[.text-orange-500];
 }
 
 body.dark .bg-white {
