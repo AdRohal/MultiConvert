@@ -1,163 +1,101 @@
-import React, { useState } from 'react';
-import CloudConvert from 'cloudconvert';
+import React, { useState } from "react";
+import axios from "axios";
 
-function ConvertDocument({ darkMode }) {
+const ConvertDocument = () => {
   const [file, setFile] = useState(null);
-  const [fileType, setFileType] = useState('');
-  const [targetType, setTargetType] = useState('');
+  const [format, setFormat] = useState("docx");
   const [convertedFile, setConvertedFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState(null);
 
-  const cloudConvert = new CloudConvert('YOUR_API_KEY');
-
-  const handleFileUpload = (event) => {
-    const uploadedFile = event.target.files[0];
-    setFile(uploadedFile);
-    analyzeFileType(uploadedFile);
+  const handleFileUpload = (e) => {
+    setFile(e.target.files[0]);
+    setConvertedFile(null); // Reset converted file when a new file is uploaded
+    setError(null); // Reset error when a new file is uploaded
   };
 
-  const analyzeFileType = (file) => {
-    const fileType = file.name.split('.').pop();
-    setFileType(fileType);
+  const handleFormatChange = (e) => {
+    setFormat(e.target.value);
   };
 
   const handleConvert = async () => {
-    if (!file || !targetType) {
-      setError('Please upload a file and select a target type.');
+    if (!file) {
+      alert("Please upload a file before converting.");
       return;
     }
 
-    setLoading(true);
-    setError('');
-    setSuccess('');
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("format", format);
 
     try {
-      const job = await cloudConvert.jobs.create({
-        tasks: {
-          'import-my-file': {
-            operation: 'import/upload'
-          },
-          'convert-my-file': {
-            operation: 'convert',
-            input: 'import-my-file',
-            output_format: targetType
-          },
-          'export-my-file': {
-            operation: 'export/url',
-            input: 'convert-my-file'
-          }
-        }
+      const response = await axios.post("http://localhost:5000/convert", formData, {
+        responseType: "blob",
       });
 
-      const uploadTask = job.tasks.filter(
-        (task) => task.name === 'import-my-file'
-      )[0];
-
-      const uploadUrl = uploadTask.result.form.url;
-      const uploadForm = uploadTask.result.form.parameters;
-
-      const formData = new FormData();
-      for (const [key, value] of Object.entries(uploadForm)) {
-        formData.append(key, value);
+      if (response.headers["content-type"] === "application/json") {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const errorResponse = JSON.parse(reader.result);
+          setError(errorResponse.error);
+        };
+        reader.readAsText(response.data);
+      } else {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const newFileName = file.name.split(".")[0] + `.${format}`;
+        setConvertedFile({ name: newFileName, url });
       }
-      formData.append('file', file);
-
-      await fetch(uploadUrl, {
-        method: 'POST',
-        body: formData
-      });
-
-      const exportTask = job.tasks.filter(
-        (task) => task.name === 'export-my-file'
-      )[0];
-
-      const fileUrl = exportTask.result.files[0].url;
-      const response = await fetch(fileUrl);
-      const blob = await response.blob();
-
-      setConvertedFile(blob);
-      setSuccess('File converted successfully!');
     } catch (error) {
-      console.error('Error converting file:', error);
-      setError(`Error converting file: ${error.message}. Please try again.`);
-    } finally {
-      setLoading(false);
+      console.error("Error converting file:", error);
+      setError("An error occurred while converting the file.");
     }
   };
 
-  const handleDownload = () => {
-    const url = URL.createObjectURL(convertedFile);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `converted.${targetType}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
-    <div className={`convert-document ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <h1 className="text-4xl font-bold mt-4">Convert Documents</h1>
-      <p className="mt-4">Here you can convert your documents.</p>
+    <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "center" }}>
+      <h2>File Converter</h2>
       <input
         type="file"
+        accept=".docx,.doc,.txt,.pdf,.ppt,.pptx"
         onChange={handleFileUpload}
-        className="mt-4 p-2 border rounded"
+        style={{ marginBottom: "10px" }}
       />
-      {file && (
-        <>
-          <p className="mt-4">File type: {fileType}</p>
-          <select
-            value={targetType}
-            onChange={(e) => setTargetType(e.target.value)}
-            className="mt-4 p-2 border rounded"
-          >
-            <option value="">Select target type</option>
-            <option value="pdf">PDF</option>
-            <option value="docx">DOCX</option>
-            <option value="doc">DOC</option>
-            <option value="pptx">PPTX</option>
-            {/* Add more options as needed */}
-          </select>
-          <button
-            onClick={handleConvert}
-            className="mt-4 bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600"
-            disabled={loading}
-          >
-            {loading ? 'Converting...' : 'Convert File'}
-          </button>
-        </>
-      )}
-      {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-lg text-center">
-            <p className="mb-4">Converting your file, please wait...</p>
-            <div className="loader"></div>
-          </div>
-        </div>
-      )}
-      {error && (
-        <div className="mt-4 bg-red-500 text-white px-4 py-2 rounded">
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="mt-4 bg-green-500 text-white px-4 py-2 rounded">
-          {success}
-        </div>
-      )}
-      {convertedFile && !loading && (
-        <button
-          onClick={handleDownload}
-          className="mt-4 bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600"
+
+      <div style={{ marginBottom: "10px" }}>
+        <label htmlFor="format">Choose format:</label>
+        <select
+          id="format"
+          value={format}
+          onChange={handleFormatChange}
+          style={{ color: "black" }} // Ensure text color is black
         >
-          Download Converted File
-        </button>
+          <option value="docx">DOCX</option>
+          <option value="doc">DOC</option>
+          <option value="txt">Text</option>
+          <option value="pdf">PDF</option>
+          <option value="ppt">PowerPoint</option>
+        </select>
+      </div>
+
+      <button onClick={handleConvert} style={{ marginBottom: "10px" }}>
+        Convert
+      </button>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {convertedFile && (
+        <div>
+          <p>File converted successfully!</p>
+          <a
+            href={convertedFile.url}
+            download={convertedFile.name}
+            style={{ textDecoration: "none", color: "white" }}
+          >
+            <button>Download {convertedFile.name}</button>
+          </a>
+        </div>
       )}
     </div>
   );
-}
+};
 
 export default ConvertDocument;
