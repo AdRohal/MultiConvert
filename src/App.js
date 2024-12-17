@@ -4,7 +4,7 @@ import './App.css';
 function App({ darkMode }) {
   return (
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
-      <header className={`App-header ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+      <header className={`App-header ${darkMode ? 'dark-mode' : 'light-mode'}`} style={{ paddingBottom: '16px' }}>
         <h1 className="text-4xl font-bold mt-4">Welcome to <span className='text-orange-500'>Multi-Convert</span></h1>
         <div className="gif-container border-4 border-transparent rounded-lg overflow-hidden pt-8 px-12 mx-12">
           <img src="/multi-convert.gif" alt="sample gif" className="App-gif w-full h-full object-cover rounded-2xl" />

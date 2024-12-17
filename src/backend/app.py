@@ -7,9 +7,13 @@ import fitz  # PyMuPDF
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.section import WD_ORIENTATION
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 import tempfile  # Import tempfile module
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -75,13 +79,45 @@ def convert_file():
             docx_document.save(converted_file_path)
 
             app.logger.info(f"Successfully converted {filename} to DOCX")
-            return send_file(converted_file_path, as_attachment=True, download_name=converted_filename)
+            return jsonify({"filename": converted_filename})
+        
+        elif file_ext == 'docx' and format == 'pdf':
+            # Convert DOCX to PDF
+            docx_file = BytesIO(file.read())
+            document = Document(docx_file)
+            pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
+            pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
+
+            c = canvas.Canvas(pdf_file_path, pagesize=letter)
+            width, height = letter
+
+            for paragraph in document.paragraphs:
+                text = paragraph.text
+                c.drawString(100, height - 100, text)
+                height -= 20  # Adjust line height
+
+            c.save()
+
+            app.logger.info(f"Successfully converted {filename} to PDF")
+            return jsonify({"filename": pdf_filename})
+        
         else:
             app.logger.error("Unsupported file format or conversion")
             return jsonify({"error": "Unsupported file format or conversion"}), 400
     except Exception as e:
         app.logger.error(f"Error during file conversion: {e}")
-        return jsonify({"error": "An error occurred during file conversion"}), 500
+        return jsonify({"error": f"An error occurred during file conversion: {e}"}), 500
+
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    file_path = os.path.join(CONVERTED_FOLDER, filename)
+    app.logger.debug(f"Attempting to download file from path: {file_path}")
+    if os.path.exists(file_path):
+        app.logger.info(f"File found: {file_path}")
+        return send_file(file_path, as_attachment=True, download_name=filename)
+    else:
+        app.logger.error(f"File not found: {file_path}")
+        return jsonify({"error": "File not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
