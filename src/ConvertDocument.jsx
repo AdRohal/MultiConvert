@@ -69,7 +69,7 @@ const ConvertDocument = ({ darkMode }) => {
             <option value="doc">DOC</option>
             <option value="txt">Text</option>
             <option value="pdf">PDF</option>
-            <option value="ppt">PowerPoint</option>
+            <option value="pptx">PowerPoint</option>
           </select>
         </div>
 

@@ -6,11 +6,16 @@ import logging
 import fitz  # PyMuPDF
 from docx import Document
 from docx.shared import Inches, Pt
-from docx.enum.section import WD_ORIENTATION
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 import tempfile  # Import tempfile module
 from flask_cors import CORS  # Import CORS
+from docx2pdf import convert  # Import docx2pdf
+from pypandoc import convert_file  # Import pypandoc
+from pptx import Presentation  # Import python-pptx
+import comtypes.client  # Import comtypes for converting pptx to pdf
+import pythoncom  # Import pythoncom for COM initialization
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -39,6 +44,8 @@ def convert_file():
         filename = secure_filename(file.filename)
         file_ext = filename.rsplit('.', 1)[1].lower()
 
+        app.logger.debug(f"Received file: {filename}, format: {format}")
+
         if file_ext == 'pdf' and format == 'docx':
             # Convert PDF to DOCX by rendering each page as an image
             pdf_file = BytesIO(file.read())
@@ -57,7 +64,6 @@ def convert_file():
                 # Set page size to match PDF page size
                 pdf_width, pdf_height = page.rect.width, page.rect.height
                 section = docx_document.sections[-1]
-                section.orientation = WD_ORIENTATION.PORTRAIT
                 section.page_width = Pt(pdf_width)
                 section.page_height = Pt(pdf_height)
                 section.left_margin = Inches(0)
@@ -71,7 +77,7 @@ def convert_file():
 
                 # Add a page break after each page except the last one
                 if page_num < len(pdf_document) - 1:
-                    docx_document.add_section(WD_ORIENTATION.PORTRAIT)
+                    docx_document.add_section()
 
             # Save the DOCX file to the designated directory
             converted_filename = f"{filename.rsplit('.', 1)[0]}.docx"
@@ -82,23 +88,98 @@ def convert_file():
             return jsonify({"filename": converted_filename})
         
         elif file_ext == 'docx' and format == 'pdf':
-            # Convert DOCX to PDF
+            # Convert DOCX to PDF using docx2pdf
             docx_file = BytesIO(file.read())
-            document = Document(docx_file)
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.docx') as temp_docx:
+                temp_docx.write(docx_file.read())
+                temp_docx_path = temp_docx.name
+
             pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
             pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
 
-            c = canvas.Canvas(pdf_file_path, pagesize=letter)
-            width, height = letter
-
-            for paragraph in document.paragraphs:
-                text = paragraph.text
-                c.drawString(100, height - 100, text)
-                height -= 20  # Adjust line height
-
-            c.save()
+            # Convert DOCX to PDF
+            convert(temp_docx_path, pdf_file_path)
 
             app.logger.info(f"Successfully converted {filename} to PDF")
+            return jsonify({"filename": pdf_filename})
+        
+        elif file_ext == 'pdf' and format == 'doc':
+            # Convert PDF to DOC using pypandoc
+            pdf_file = BytesIO(file.read())
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
+                temp_pdf.write(pdf_file.read())
+                temp_pdf_path = temp_pdf.name
+
+            doc_filename = f"{filename.rsplit('.', 1)[0]}.doc"
+            doc_file_path = os.path.join(CONVERTED_FOLDER, doc_filename)
+
+            # Convert PDF to DOC
+            convert_file(temp_pdf_path, 'doc', outputfile=doc_file_path)
+
+            app.logger.info(f"Successfully converted {filename} to DOC")
+            return jsonify({"filename": doc_filename})
+        
+        elif file_ext == 'pdf' and format == 'pptx':
+            # Convert PDF to PPTX using python-pptx
+            pdf_file = BytesIO(file.read())
+            pdf_document = fitz.open(stream=pdf_file, filetype="pdf")
+            pptx_document = Presentation()
+
+            for page_num in range(len(pdf_document)):
+                page = pdf_document.load_page(page_num)
+                pix = page.get_pixmap()
+
+                # Save page as an image
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_img:
+                    temp_img.write(pix.tobytes())
+                    temp_img_path = temp_img.name
+
+                # Add image to PPTX
+                slide_layout = pptx_document.slide_layouts[5]  # Use a blank slide layout
+                slide = pptx_document.slides.add_slide(slide_layout)
+                left = top = 0
+                slide.shapes.add_picture(temp_img_path, left, top, width=pptx_document.slide_width, height=pptx_document.slide_height)
+                os.remove(temp_img_path)
+
+            # Save the PPTX file to the designated directory
+            pptx_filename = f"{filename.rsplit('.', 1)[0]}.pptx"
+            pptx_file_path = os.path.join(CONVERTED_FOLDER, pptx_filename)
+            pptx_document.save(pptx_file_path)
+
+            app.logger.info(f"Successfully converted {filename} to PPTX")
+            return jsonify({"filename": pptx_filename})
+        
+        elif file_ext == 'pptx' and format == 'pdf':
+            # Convert PPTX to PDF using comtypes
+            pptx_file = BytesIO(file.read())
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.pptx') as temp_pptx:
+                temp_pptx.write(pptx_file.read())
+                temp_pptx_path = temp_pptx.name
+
+            pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
+            pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
+
+            pythoncom.CoInitialize()  # Initialize COM library
+            powerpoint = comtypes.client.CreateObject("Powerpoint.Application")
+            powerpoint.Visible = 1
+            presentation = powerpoint.Presentations.Open(temp_pptx_path)
+            presentation.SaveAs(pdf_file_path, 32)  # 32 represents the format for PDF
+            presentation.Close()
+            powerpoint.Quit()
+
+            app.logger.info(f"Successfully converted {filename} to PDF")
+            return jsonify({"filename": pdf_filename})
+        
+        elif file_ext == 'pdf' and format == 'pdf':
+            # Re-save PDF
+            pdf_file = BytesIO(file.read())
+            pdf_filename = f"{filename.rsplit('.', 1)[0]}_converted.pdf"
+            pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
+
+            with open(pdf_file_path, 'wb') as f:
+                f.write(pdf_file.read())
+
+            app.logger.info(f"Successfully re-saved {filename} as PDF")
             return jsonify({"filename": pdf_filename})
         
         else:
