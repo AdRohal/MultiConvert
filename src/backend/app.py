@@ -14,8 +14,10 @@ from flask_cors import CORS  # Import CORS
 from docx2pdf import convert  # Import docx2pdf
 from pypandoc import convert_file  # Import pypandoc
 from pptx import Presentation  # Import python-pptx
+from pptx.util import Inches, Pt  # Import pptx.util for setting slide dimensions
 import comtypes.client  # Import comtypes for converting pptx to pdf
 import pythoncom  # Import pythoncom for COM initialization
+import zipfile  # Import zipfile for creating ZIP files
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -97,11 +99,37 @@ def convert_file():
             pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
             pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
 
-            # Convert DOCX to PDF
-            convert(temp_docx_path, pdf_file_path)
+            pythoncom.CoInitialize()  # Initialize COM library
+            try:
+                # Convert DOCX to PDF
+                convert(temp_docx_path, pdf_file_path)
+            finally:
+                pythoncom.CoUninitialize()  # Uninitialize COM library
 
             app.logger.info(f"Successfully converted {filename} to PDF")
             return jsonify({"filename": pdf_filename})
+        
+        elif file_ext == 'docx' and format == 'pptx':
+            # Convert DOCX to PPTX using python-pptx
+            docx_file = BytesIO(file.read())
+            docx_document = Document(docx_file)
+            pptx_document = Presentation()
+
+            for para in docx_document.paragraphs:
+                slide_layout = pptx_document.slide_layouts[5]  # Use a blank slide layout
+                slide = pptx_document.slides.add_slide(slide_layout)
+                text_box = slide.shapes.add_textbox(Inches(1), Inches(1), Inches(8.5), Inches(5.5))
+                text_frame = text_box.text_frame
+                p = text_frame.add_paragraph()
+                p.text = para.text
+
+            # Save the PPTX file to the designated directory
+            pptx_filename = f"{filename.rsplit('.', 1)[0]}.pptx"
+            pptx_file_path = os.path.join(CONVERTED_FOLDER, pptx_filename)
+            pptx_document.save(pptx_file_path)
+
+            app.logger.info(f"Successfully converted {filename} to PPTX")
+            return jsonify({"filename": pptx_filename})
         
         elif file_ext == 'pdf' and format == 'doc':
             # Convert PDF to DOC using pypandoc
@@ -119,35 +147,36 @@ def convert_file():
             app.logger.info(f"Successfully converted {filename} to DOC")
             return jsonify({"filename": doc_filename})
         
-        elif file_ext == 'pdf' and format == 'pptx':
-            # Convert PDF to PPTX using python-pptx
+        elif file_ext == 'pdf' and format in ['png', 'jpg']:
+            # Convert PDF to PNG or JPG
             pdf_file = BytesIO(file.read())
             pdf_document = fitz.open(stream=pdf_file, filetype="pdf")
-            pptx_document = Presentation()
+            image_paths = []
 
             for page_num in range(len(pdf_document)):
                 page = pdf_document.load_page(page_num)
                 pix = page.get_pixmap()
 
                 # Save page as an image
-                with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_img:
-                    temp_img.write(pix.tobytes())
-                    temp_img_path = temp_img.name
+                image_filename = f"{filename.rsplit('.', 1)[0]}_page_{page_num + 1}.{format}"
+                image_path = os.path.join(CONVERTED_FOLDER, image_filename)
+                pix.save(image_path)
+                image_paths.append(image_path)
 
-                # Add image to PPTX
-                slide_layout = pptx_document.slide_layouts[5]  # Use a blank slide layout
-                slide = pptx_document.slides.add_slide(slide_layout)
-                left = top = 0
-                slide.shapes.add_picture(temp_img_path, left, top, width=pptx_document.slide_width, height=pptx_document.slide_height)
-                os.remove(temp_img_path)
+            if len(image_paths) > 1:
+                # Create a ZIP file if there are multiple images
+                zip_filename = f"{filename.rsplit('.', 1)[0]}_images.zip"
+                zip_path = os.path.join(CONVERTED_FOLDER, zip_filename)
+                with zipfile.ZipFile(zip_path, 'w') as zipf:
+                    for image_path in image_paths:
+                        zipf.write(image_path, os.path.basename(image_path))
+                        os.remove(image_path)  # Remove the image file after adding to ZIP
 
-            # Save the PPTX file to the designated directory
-            pptx_filename = f"{filename.rsplit('.', 1)[0]}.pptx"
-            pptx_file_path = os.path.join(CONVERTED_FOLDER, pptx_filename)
-            pptx_document.save(pptx_file_path)
-
-            app.logger.info(f"Successfully converted {filename} to PPTX")
-            return jsonify({"filename": pptx_filename})
+                app.logger.info(f"Successfully converted {filename} to ZIP containing images")
+                return jsonify({"filename": zip_filename})
+            else:
+                app.logger.info(f"Successfully converted {filename} to {format.upper()}")
+                return jsonify({"filename": os.path.basename(image_paths[0])})
         
         elif file_ext == 'pptx' and format == 'pdf':
             # Convert PPTX to PDF using comtypes
@@ -160,12 +189,15 @@ def convert_file():
             pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
 
             pythoncom.CoInitialize()  # Initialize COM library
-            powerpoint = comtypes.client.CreateObject("Powerpoint.Application")
-            powerpoint.Visible = 1
-            presentation = powerpoint.Presentations.Open(temp_pptx_path)
-            presentation.SaveAs(pdf_file_path, 32)  # 32 represents the format for PDF
-            presentation.Close()
-            powerpoint.Quit()
+            try:
+                powerpoint = comtypes.client.CreateObject("Powerpoint.Application")
+                powerpoint.Visible = 1
+                presentation = powerpoint.Presentations.Open(temp_pptx_path)
+                presentation.SaveAs(pdf_file_path, 32)  # 32 represents the format for PDF
+                presentation.Close()
+                powerpoint.Quit()
+            finally:
+                pythoncom.CoUninitialize()  # Uninitialize COM library
 
             app.logger.info(f"Successfully converted {filename} to PDF")
             return jsonify({"filename": pdf_filename})
