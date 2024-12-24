@@ -46,13 +46,20 @@ const ConvertDocument = ({ darkMode }) => {
     }
   };
 
+  const getFilteredFormats = () => {
+    if (!file) return ["docx", "doc", "pdf", "pptx", "png", "jpg"];
+    const fileExt = file.name.split(".").pop().toLowerCase();
+    const formats = ["docx", "doc", "pdf", "pptx", "png", "jpg"];
+    return formats.filter((fmt) => fmt !== fileExt);
+  };
+
   return (
     <div className={`flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`} style={{ height: '79vh' }}>
       <div className={`max-w-xs mx-auto text-center ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} rounded-lg`} style={{ padding: '30px' }}>
         <h2 className="mb-6 text-2xl font-bold">File Converter</h2>
         <input
           type="file"
-          accept=".docx,.doc,.txt,.pdf,.ppt,.pptx"
+          accept=".docx,.doc,.pdf,.ppt,.pptx"
           onChange={handleFileUpload}
           className={`mb-4 block w-full text-sm ${darkMode ? 'text-gray-500' : 'text-gray-700'} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600`}
         />
@@ -65,11 +72,9 @@ const ConvertDocument = ({ darkMode }) => {
             onChange={handleFormatChange}
             className={`text-black rounded-md p-2 ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-200 text-black'}`}
           >
-            <option value="docx">DOCX</option>
-            <option value="doc">DOC</option>
-            <option value="txt">Text</option>
-            <option value="pdf">PDF</option>
-            <option value="pptx">PowerPoint</option>
+            {getFilteredFormats().map((fmt) => (
+              <option key={fmt} value={fmt}>{fmt.toUpperCase()}</option>
+            ))}
           </select>
         </div>
 
