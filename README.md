@@ -71,5 +71,5 @@ To run the entire project, follow these steps:
 
 4. **Start Backend**:
    ```sh
-   py src/backend/app.py
+   python src/backend/app.py
    ```

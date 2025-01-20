@@ -6,6 +6,7 @@ import App from './App';
 import Header from './Header';
 import Footer from './Footer';
 import ConvertDocument from './ConvertDocument';
+import ConvertImage from './ConvertImage';
 import reportWebVitals from './reportWebVitals';
 
 const Root = () => {
@@ -29,6 +30,7 @@ const Root = () => {
       <Routes>
         <Route path="/" element={<App darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/convert-document" element={<ConvertDocument darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>} />
+        <Route path="/convert-images" element={<ConvertImage darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>} />
       </Routes>
       <Footer darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
     </Router>

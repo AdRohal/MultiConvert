@@ -1,0 +1,13 @@
+Flask==2.3.2
+flask-cors==3.0.10
+Werkzeug==2.3.6
+pymupdf==1.22.5
+python-docx==0.8.11
+reportlab==3.6.12
+docx2pdf==0.1.8
+pypandoc==1.10
+python-pptx==0.6.21
+comtypes==1.1.14
+pydub==0.25.1
+Pillow==10.0.0
+requests==2.31.0

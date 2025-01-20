@@ -19,6 +19,7 @@ import comtypes.client  # Import comtypes for converting pptx to pdf
 import pythoncom  # Import pythoncom for COM initialization
 import zipfile  # Import zipfile for creating ZIP files
 from pydub import AudioSegment  # Import pydub for audio conversion
+from PIL import Image  # Import PIL for image conversion
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -38,7 +39,7 @@ def convert_file():
             return jsonify({"error": "No file part"}), 400
 
         file = request.files['file']
-        format = request.form.get('format', 'docx')
+        format = request.form.get('format', 'docx').lower()
 
         if file.filename == '':
             app.logger.error("No selected file")
@@ -51,7 +52,62 @@ def convert_file():
 
         # Existing conversion logic...
 
-        if file_ext == 'pdf' and format == 'docx':
+        if file_ext in ['png', 'jpg', 'jpeg'] and format in ['png', 'jpg', 'jpeg', 'ico']:
+            # Convert image to the desired format
+            image = Image.open(file)
+            converted_filename = f"{filename.rsplit('.', 1)[0]}.{format}"
+            converted_file_path = os.path.join(CONVERTED_FOLDER, converted_filename)
+            if format in ['jpg', 'jpeg']:
+                image = image.convert("RGB")  # Ensure the image is in RGB mode for JPG conversion
+            image.save(converted_file_path, format=format.upper() if format != 'ico' else 'ICO')
+
+            app.logger.info(f"Successfully converted {filename} to {format.upper()}")
+            return jsonify({"filename": converted_filename})
+
+        elif file_ext == 'png' and format == 'pdf':
+            # Convert PNG to PDF
+            image = Image.open(file)
+            pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
+            pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
+
+            image = image.convert("RGB")  # Ensure the image is in RGB mode for PDF conversion
+            image.save(pdf_file_path, "PDF", resolution=100.0)
+
+            app.logger.info(f"Successfully converted {filename} to PDF")
+            return jsonify({"filename": pdf_filename})
+
+        elif file_ext == 'png' and format == 'docx':
+            # Convert PNG to DOCX
+            image = Image.open(file)
+            docx_document = Document()
+
+            # Set page size to match image size
+            width, height = image.size
+            section = docx_document.sections[-1]
+            section.page_width = Pt(width)
+            section.page_height = Pt(height)
+            section.left_margin = Inches(0)
+            section.right_margin = Inches(0)
+            section.top_margin = Inches(0)
+            section.bottom_margin = Inches(0)
+
+            # Add image to DOCX
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_img:
+                image.save(temp_img, format="PNG")
+                temp_img_path = temp_img.name
+
+            docx_document.add_picture(temp_img_path, width=Pt(width), height=Pt(height))
+            os.remove(temp_img_path)
+
+            # Save the DOCX file to the designated directory
+            docx_filename = f"{filename.rsplit('.', 1)[0]}.docx"
+            docx_file_path = os.path.join(CONVERTED_FOLDER, docx_filename)
+            docx_document.save(docx_file_path)
+
+            app.logger.info(f"Successfully converted {filename} to DOCX")
+            return jsonify({"filename": docx_filename})
+
+        elif file_ext == 'pdf' and format == 'docx':
             # Convert PDF to DOCX by rendering each page as an image
             pdf_file = BytesIO(file.read())
             pdf_document = fitz.open(stream=pdf_file, filetype="pdf")
@@ -150,7 +206,7 @@ def convert_file():
             app.logger.info(f"Successfully converted {filename} to DOC")
             return jsonify({"filename": doc_filename})
         
-        elif file_ext == 'pdf' and format in ['png', 'jpg']:
+        elif file_ext == 'pdf' and format in ['png', 'jpg', 'jpeg']:
             # Convert PDF to PNG or JPG
             pdf_file = BytesIO(file.read())
             pdf_document = fitz.open(stream=pdf_file, filetype="pdf")
