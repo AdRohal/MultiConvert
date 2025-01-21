@@ -50,8 +50,6 @@ def convert_file():
 
         app.logger.debug(f"Received file: {filename}, format: {format}")
 
-        # Existing conversion logic...
-
         if file_ext in ['png', 'jpg', 'jpeg'] and format in ['png', 'jpg', 'jpeg', 'ico']:
             # Convert image to the desired format
             image = Image.open(file)
@@ -273,26 +271,6 @@ def convert_file():
             app.logger.info(f"Successfully re-saved {filename} as PDF")
             return jsonify({"filename": pdf_filename})
         
-        elif file_ext == 'mp3' and format == 'wav':
-            # Convert MP3 to WAV
-            audio = AudioSegment.from_mp3(file)
-            converted_filename = f"{filename.rsplit('.', 1)[0]}.wav"
-            converted_file_path = os.path.join(CONVERTED_FOLDER, converted_filename)
-            audio.export(converted_file_path, format="wav")
-
-            app.logger.info(f"Successfully converted {filename} to WAV")
-            return jsonify({"filename": converted_filename})
-
-        elif file_ext == 'wav' and format == 'mp3':
-            # Convert WAV to MP3
-            audio = AudioSegment.from_wav(file)
-            converted_filename = f"{filename.rsplit('.', 1)[0]}.mp3"
-            converted_file_path = os.path.join(CONVERTED_FOLDER, converted_filename)
-            audio.export(converted_file_path, format="mp3")
-
-            app.logger.info(f"Successfully converted {filename} to MP3")
-            return jsonify({"filename": converted_filename})
-
         else:
             app.logger.error("Unsupported file format or conversion")
             return jsonify({"error": "Unsupported file format or conversion"}), 400

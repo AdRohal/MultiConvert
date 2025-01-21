@@ -139,8 +139,6 @@ function App({ darkMode }) {
                   <option value="jpeg">JPEG</option>
                   <option value="png">PNG</option>
                   <option value="ico">ICO</option>
-                  <option value="mp3">MP3</option>
-                  <option value="wav">WAV</option>
                 </select>
               </label>
               <button
@@ -156,8 +154,6 @@ function App({ darkMode }) {
         <div className="mt-8 flex flex-wrap justify-center space-x-4">
           <a href="/convert-document" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Documents</a>
           <a href="/convert-images" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Images</a>
-          <a href="/convert-music" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Music</a>
-          <a href="/convert-videos" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Videos</a>
         </div>
       </header>
     </div>

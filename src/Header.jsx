@@ -39,8 +39,6 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               <div className="flex flex-wrap">
                 <a href="/convert-document" className="block w-1/2 px-4 py-2 hover:bg-gray-100 border-r border-orange-500">Convert Document</a>
                 <a href="/convert-images" className="block w-1/2 px-4 py-2 hover:bg-gray-100">Convert Images</a>
-                <a href="/convert-music" className="block w-1/2 px-4 py-2 hover:bg-gray-100 border-r border-orange-500">Convert Music</a>
-                <a href="/convert-videos" className="block w-1/2 px-4 py-2 hover:bg-gray-100">Convert Videos</a>
               </div>
             </div>
           </div>
