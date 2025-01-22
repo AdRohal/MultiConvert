@@ -18,7 +18,6 @@ from pptx.util import Inches, Pt  # Import pptx.util for setting slide dimension
 import comtypes.client  # Import comtypes for converting pptx to pdf
 import pythoncom  # Import pythoncom for COM initialization
 import zipfile  # Import zipfile for creating ZIP files
-from pydub import AudioSegment  # Import pydub for audio conversion
 from PIL import Image  # Import PIL for image conversion
 
 app = Flask(__name__)
@@ -145,7 +144,41 @@ def convert_file():
 
             app.logger.info(f"Successfully converted {filename} to DOCX")
             return jsonify({"filename": converted_filename})
-        
+
+        elif file_ext == 'pdf' and format == 'pptx':
+            # Convert PDF to PPTX by rendering each page as an image
+            pdf_file = BytesIO(file.read())
+            pdf_document = fitz.open(stream=pdf_file, filetype="pdf")
+            pptx_document = Presentation()
+
+            for page_num in range(len(pdf_document)):
+                page = pdf_document.load_page(page_num)
+                pix = page.get_pixmap()
+
+                # Save page as an image
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_img:
+                    temp_img.write(pix.tobytes())
+                    temp_img_path = temp_img.name
+
+                # Set slide size to match PDF page size
+                pdf_width, pdf_height = page.rect.width, page.rect.height
+                pptx_document.slide_width = Pt(pdf_width)
+                pptx_document.slide_height = Pt(pdf_height)
+
+                # Add image to PPTX slide
+                slide_layout = pptx_document.slide_layouts[5]  # Use a blank slide layout
+                slide = pptx_document.slides.add_slide(slide_layout)
+                slide.shapes.add_picture(temp_img_path, Inches(0), Inches(0), width=Pt(pdf_width), height=Pt(pdf_height))
+                os.remove(temp_img_path)
+
+            # Save the PPTX file to the designated directory
+            converted_filename = f"{filename.rsplit('.', 1)[0]}.pptx"
+            converted_file_path = os.path.join(CONVERTED_FOLDER, converted_filename)
+            pptx_document.save(converted_file_path)
+
+            app.logger.info(f"Successfully converted {filename} to PPTX")
+            return jsonify({"filename": converted_filename})
+
         elif file_ext == 'docx' and format == 'pdf':
             # Convert DOCX to PDF using docx2pdf
             docx_file = BytesIO(file.read())
