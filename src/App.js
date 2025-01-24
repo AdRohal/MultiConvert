@@ -54,7 +54,7 @@ function App({ darkMode }) {
     <div className={`App ${darkMode ? 'dark-mode' : 'light-mode'}`}>
       <header className={`App-header ${darkMode ? 'dark-mode' : 'light-mode'}`} style={{ paddingBottom: '16px' }}>
         <h1 className="text-4xl font-bold mt-4">Welcome to <span className='text-orange-500'>Multi-Convert</span></h1>
-        <div className="gif-container border-4 border-transparent rounded-lg overflow-hidden pt-2 px-3 mx-3" style={{ width: '900px', height: '300px' }}>
+        <div className="gif-container border-4 border-transparent rounded-lg overflow-hidden pt-2 px-3 mx-3" style={{ width: '100%', maxWidth: '900px', height: '300px' }}>
           <img src="/multi-convert.gif" alt="sample gif" className="App-gif w-full h-full object-cover rounded-2xl" />
         </div>
         
@@ -63,7 +63,6 @@ function App({ darkMode }) {
           className="border-dashed border-2 border-orange-500 rounded-lg p-6 bg-orange-50 flex flex-col items-center justify-center mt-8 relative"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          style={{ width: '600px', height: '200px' }}
         >
           <button
             className="absolute top-2 right-2 bg-transparent text-red-500 px-2 py-1 rounded hover:bg-red-100 flex items-center"
@@ -98,7 +97,7 @@ function App({ darkMode }) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M7 2a2 2 0 00-2 2v16a2 2 0 002 2h10a2 2 0 002-2V8l-6-6H7z"
+                    d="M7 2a2 2 0 00-2 2v16a2 2 2 0 002 2h10a2 2 2 0 002-2V8l-6-6H7z"
                   />
                   <path
                     strokeLinecap="round"
@@ -155,6 +154,21 @@ function App({ darkMode }) {
         <div className="mt-8 flex flex-wrap justify-center space-x-4">
           <a href="/convert-document" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Documents</a>
           <a href="/convert-images" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Images</a>
+        </div>
+
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <h3 className="text-xl font-bold mb-2">Why Choose Us?</h3>
+            <p>We provide the best conversion services with high accuracy and speed. Our platform supports multiple file formats and ensures your data is secure.</p>
+          </div>
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <h3 className="text-xl font-bold mb-2">Supported Formats</h3>
+            <p>We support a wide range of formats including PDF, DOCX, PPTX, JPG, JPEG, PNG, and ICO. Convert your files with ease and flexibility.</p>
+          </div>
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <h3 className="text-xl font-bold mb-2">Fast and Secure</h3>
+            <p>Our conversion process is fast and secure. Your files are processed quickly and we ensure that your data is protected at all times.</p>
+          </div>
         </div>
       </header>
     </div>

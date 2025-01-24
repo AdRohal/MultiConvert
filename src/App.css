@@ -68,3 +68,41 @@ html, body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .App-header {
+    padding: 1rem;
+  }
+
+  .gif-container {
+    width: 50%;
+    height: auto;
+  }
+
+  .border-dashed {
+    width: 50%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .mt-8 {
+    margin-top: 2rem;
+  }
+
+  .mt-12 {
+    margin-top: 3rem;
+  }
+
+  .grid-cols-1 {
+    grid-template-columns: 1fr;
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .space-x-4 {
+    margin: 0;
+  }
+}

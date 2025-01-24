@@ -1,0 +1,14 @@
+.bg-orange-transparent {
+    background: url('../public/bg-orange.png') no-repeat center center;
+    background-size: cover;
+  }
+  
+  .dark-mode {
+    background-color: rgb(17 24 39); /* Tailwind's gray-900 with transparency */
+    color: #a0aec0; /* Tailwind's gray-400 */
+  }
+  
+  .light-mode {
+    background-color: rgb(243 244 246); /* Tailwind's gray-100 with transparency */
+    color: rgb(17 24 39); /* Tailwind's gray-800 */
+  }

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import './Convert.css'; // Import the CSS file for background image
 
 const ConvertImage = ({ darkMode }) => {
   const [file, setFile] = useState(null);
@@ -54,7 +55,7 @@ const ConvertImage = ({ darkMode }) => {
   };
 
   return (
-    <div className={`flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`} style={{ height: '79vh' }}>
+    <div className={`flex items-center justify-center ${darkMode ? 'dark-mode' : 'light-mode'} bg-orange-transparent`} style={{ height: '79vh' }}>
       <div className={`max-w-xs mx-auto text-center ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} rounded-lg`} style={{ padding: '30px' }}>
         <h2 className="mb-6 text-2xl font-bold">Image Converter</h2>
         <input
@@ -90,15 +91,15 @@ const ConvertImage = ({ darkMode }) => {
 
         {convertedFile && (
           <div>
-            <p className="text-green-500 border border-green-500 p-2 rounded">File converted successfully!</p>
+            <p className="text-green-500 border border-green-500 p-2 rounded text-sm">File converted successfully!</p>
             <a
               href={convertedFile.url}
               download={convertedFile.name}
-              className="text-green-500 no-underline p-2 mt-2"
+              className="text-green-500 no-underline p-2 mt-2 text-sm"
               onClick={() => console.log(`Downloading file from: ${convertedFile.url}`)}
             >
               <button className="bg-orange-500 text-white py-2 mt-2 px-4 rounded hover:bg-orange-600">
-                Download {convertedFile.name}
+                Download!<br></br>'{convertedFile.name}'
               </button>
             </a>
           </div>
