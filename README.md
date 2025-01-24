@@ -1,6 +1,6 @@
 # Multi-Convert
 
-Multi-Convert is a versatile and powerful tool designed to handle various types of file conversions. Whether you need to convert documents from PDF to DOCX, transform music files, convert videos, or process images, Multi-Convert has you covered. This project combines a user-friendly frontend interface with a robust backend to provide seamless and efficient file conversion capabilities.
+Multi-Convert is a versatile and powerful tool designed to handle various types of file conversions. Whether you need to convert documents from PDF to DOCX and other types & convert images, convert videos, Multi-Convert has you covered. This project combines a user-friendly frontend interface with a robust backend to provide seamless and efficient file conversion capabilities.
 
 ## Available Scripts for Frontend
 
@@ -55,21 +55,3 @@ Open [http://localhost:5000](http://localhost:5000) to view it in your browser.
 To run the entire project, follow these steps:
 
 1. **Install Frontend Dependencies**:
-   ```sh
-   npm install
-   ```
-
-2. **Start Frontend**:
-   ```sh
-   npm start
-   ```
-
-3. **Install Backend Dependencies**:
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-4. **Start Backend**:
-   ```sh
-   python src/backend/app.py
-   ```

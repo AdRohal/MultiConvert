@@ -134,8 +134,8 @@ function App({ darkMode }) {
                 >
                   <option value="">Select format</option>
                   <option value="pdf">PDF</option>
-                  <option value="docx">DOCX</option>
                   <option value="pptx">PPTX</option>
+                  <option value="docx">DOCX</option>
                   <option value="jpg">JPG</option>
                   <option value="jpeg">JPEG</option>
                   <option value="png">PNG</option>

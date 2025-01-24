@@ -9,7 +9,7 @@ const ConvertDocument = ({ darkMode }) => {
 
   const handleFileUpload = (e) => {
     setFile(e.target.files[0]);
-    setConvertedFile(null); // Reset converted file when a new file is uploaded
+    setConvertedFile(null);
   };
 
   const handleFormatChange = (e) => {
@@ -26,7 +26,7 @@ const ConvertDocument = ({ darkMode }) => {
     formData.append("file", file);
     formData.append("format", format);
 
-    setLoading(true); // Show loading popup
+    setLoading(true);
 
     try {
       const response = await axios.post("http://localhost:5000/convert", formData);
@@ -42,7 +42,7 @@ const ConvertDocument = ({ darkMode }) => {
       const newFileName = file.name.split(".")[0] + `.${format}`;
       setConvertedFile({ name: newFileName, url: null });
     } finally {
-      setLoading(false); // Hide loading popup
+      setLoading(false);
     }
   };
 
@@ -90,14 +90,14 @@ const ConvertDocument = ({ darkMode }) => {
 
         {convertedFile && (
           <div>
-            <p>File converted successfully!</p>
+            <p className="text-green-500 border border-green-500 p-2 rounded">File converted successfully!</p>
             <a
               href={convertedFile.url}
               download={convertedFile.name}
-              className="text-white no-underline"
+              className="text-green-500 no-underline p-2 mt-2"
               onClick={() => console.log(`Downloading file from: ${convertedFile.url}`)}
             >
-              <button className="bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600">
+              <button className="bg-orange-500 text-white py-2 mt-2 px-4 rounded hover:bg-orange-600">
                 Download {convertedFile.name}
               </button>
             </a>

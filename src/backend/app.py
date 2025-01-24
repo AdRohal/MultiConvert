@@ -9,19 +9,19 @@ from docx.shared import Inches, Pt
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-import tempfile  # Import tempfile module
-from flask_cors import CORS  # Import CORS
-from docx2pdf import convert  # Import docx2pdf
-from pypandoc import convert_file  # Import pypandoc
-from pptx import Presentation  # Import python-pptx
-from pptx.util import Inches, Pt  # Import pptx.util for setting slide dimensions
-import comtypes.client  # Import comtypes for converting pptx to pdf
-import pythoncom  # Import pythoncom for COM initialization
-import zipfile  # Import zipfile for creating ZIP files
-from PIL import Image  # Import PIL for image conversion
+import tempfile
+from flask_cors import CORS
+from docx2pdf import convert
+from pypandoc import convert_file
+from pptx import Presentation
+from pptx.util import Inches, Pt
+import comtypes.client
+import pythoncom
+import zipfile 
+from PIL import Image 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(app)
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -67,7 +67,7 @@ def convert_file():
             pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
             pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
 
-            image = image.convert("RGB")  # Ensure the image is in RGB mode for PDF conversion
+            image = image.convert("RGB")
             image.save(pdf_file_path, "PDF", resolution=100.0)
 
             app.logger.info(f"Successfully converted {filename} to PDF")
@@ -189,12 +189,12 @@ def convert_file():
             pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
             pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
 
-            pythoncom.CoInitialize()  # Initialize COM library
+            pythoncom.CoInitialize()
             try:
                 # Convert DOCX to PDF
                 convert(temp_docx_path, pdf_file_path)
             finally:
-                pythoncom.CoUninitialize()  # Uninitialize COM library
+                pythoncom.CoUninitialize()
 
             app.logger.info(f"Successfully converted {filename} to PDF")
             return jsonify({"filename": pdf_filename})
@@ -206,7 +206,7 @@ def convert_file():
             pptx_document = Presentation()
 
             for para in docx_document.paragraphs:
-                slide_layout = pptx_document.slide_layouts[5]  # Use a blank slide layout
+                slide_layout = pptx_document.slide_layouts[5]
                 slide = pptx_document.slides.add_slide(slide_layout)
                 text_box = slide.shapes.add_textbox(Inches(1), Inches(1), Inches(8.5), Inches(5.5))
                 text_frame = text_box.text_frame
@@ -260,7 +260,7 @@ def convert_file():
                 with zipfile.ZipFile(zip_path, 'w') as zipf:
                     for image_path in image_paths:
                         zipf.write(image_path, os.path.basename(image_path))
-                        os.remove(image_path)  # Remove the image file after adding to ZIP
+                        os.remove(image_path)
 
                 app.logger.info(f"Successfully converted {filename} to ZIP containing images")
                 return jsonify({"filename": zip_filename})
@@ -278,16 +278,16 @@ def convert_file():
             pdf_filename = f"{filename.rsplit('.', 1)[0]}.pdf"
             pdf_file_path = os.path.join(CONVERTED_FOLDER, pdf_filename)
 
-            pythoncom.CoInitialize()  # Initialize COM library
+            pythoncom.CoInitialize()
             try:
                 powerpoint = comtypes.client.CreateObject("Powerpoint.Application")
                 powerpoint.Visible = 1
                 presentation = powerpoint.Presentations.Open(temp_pptx_path)
-                presentation.SaveAs(pdf_file_path, 32)  # 32 represents the format for PDF
+                presentation.SaveAs(pdf_file_path, 32)
                 presentation.Close()
                 powerpoint.Quit()
             finally:
-                pythoncom.CoUninitialize()  # Uninitialize COM library
+                pythoncom.CoUninitialize()
 
             app.logger.info(f"Successfully converted {filename} to PDF")
             return jsonify({"filename": pdf_filename})
