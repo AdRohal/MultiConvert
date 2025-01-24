@@ -17,8 +17,17 @@ body {
 }
 
 .footer {
-  background-color: rgb(40 44 52);
   padding: 20px 0;
+}
+
+.footer.dark-mode {
+  background-color: #1a202c; /* Tailwind's gray-900 */
+  color: #a0aec0; /* Tailwind's gray-400 */
+}
+
+.footer.light-mode {
+  background-color: #f7fafc; /* Tailwind's gray-100 */
+  color: #2d3748; /* Tailwind's gray-800 */
 }
 
 .container {
@@ -32,7 +41,6 @@ ul {
 
 .footer-col h4 {
   font-size: 18px;
-  color: #FFF;
   text-transform: capitalize;
   margin-bottom: 15px;
   font-weight: 500;
@@ -54,7 +62,6 @@ ul {
 }
 
 .footer-col ul li a {
-  color: #DDD;
   display: block;
   font-size: 1rem;
   font-weight: 300;
@@ -64,13 +71,10 @@ ul {
 }
 
 .footer-col ul li a:hover {
-  color: #FFF;
   padding-left: 7px;
 }
 
 .footer-col .social-links a {
-  color: #FFF;
-  background-color: rgba(255, 255, 255, 0.2);
   display: inline-block;
   height: 40px;
   width: 40px;
