@@ -57,10 +57,10 @@ function App({ darkMode }) {
         <div className="gif-container border-4 border-transparent rounded-lg overflow-hidden pt-2 px-3 mx-3" style={{ width: '100%', maxWidth: '900px', height: '300px' }}>
           <img src="/multi-convert.gif" alt="sample gif" className="App-gif w-full h-full object-cover rounded-2xl" />
         </div>
-        
+
         {/* Drag-and-Drop File Upload Component */}
         <div
-          className="border-dashed border-2 border-orange-500 rounded-lg p-6 bg-orange-50 flex flex-col items-center justify-center mt-8 relative"
+          className="border-dashed border-2 border-orange-500 rounded-lg p-12 pl-40 pr-40 bg-orange-50 flex flex-col items-center justify-center mt-8 relative"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >
@@ -150,24 +150,87 @@ function App({ darkMode }) {
             </div>
           )}
         </div>
-        
+
         <div className="mt-8 flex flex-wrap justify-center space-x-4">
           <a href="/convert-document" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Documents</a>
           <a href="/convert-images" className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-orange-600">Convert Images</a>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
           <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
             <h3 className="text-xl font-bold mb-2">Why Choose Us?</h3>
             <p>We provide the best conversion services with high accuracy and speed. Our platform supports multiple file formats and ensures your data is secure.</p>
           </div>
           <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 6h18M3 14h18M3 18h18" />
+              </svg>
+            </div>
             <h3 className="text-xl font-bold mb-2">Supported Formats</h3>
             <p>We support a wide range of formats including PDF, DOCX, PPTX, JPG, JPEG, PNG, and ICO. Convert your files with ease and flexibility.</p>
           </div>
           <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20h.01M12 4h.01M4 12h.01M20 12h.01M4 4h.01M20 4h.01M4 20h.01M20 20h.01" />
+              </svg>
+            </div>
             <h3 className="text-xl font-bold mb-2">Fast and Secure</h3>
             <p>Our conversion process is fast and secure. Your files are processed quickly and we ensure that your data is protected at all times.</p>
+          </div>
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">User-Friendly Interface</h3>
+            <p>Our platform is designed with a user-friendly interface that makes it easy for anyone to convert files without any hassle.</p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">24/7 Customer Support</h3>
+            <p>We offer 24/7 customer support to assist you with any issues or questions you may have during the conversion process.</p>
+          </div>
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">High Quality Output</h3>
+            <p>We ensure that the converted files maintain high quality and accuracy, preserving the original content and format.</p>
+          </div>
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Multiple File Conversions</h3>
+            <p>Our platform supports multiple file conversions at once, saving you time and effort.</p>
+          </div>
+          <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
+            <div className="text-orange-500 mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11V7a4 4 0 10-8 0v4a4 4 0 004 4h4a4 4 0 004-4z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Secure and Private</h3>
+            <p>We prioritize your privacy and security, ensuring that your files are handled with the utmost care and confidentiality.</p>
           </div>
         </div>
       </header>
