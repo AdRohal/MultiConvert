@@ -60,7 +60,7 @@ function App({ darkMode }) {
 
         {/* Drag-and-Drop File Upload Component */}
         <div
-          className="border-dashed border-2 border-orange-500 rounded-lg p-12 pl-40 pr-40 bg-orange-50 flex flex-col items-center justify-center mt-8 relative"
+          className="border-dashed border-2 border-orange-500 rounded-lg p-12 pl-60 pr-60 bg-orange-50 flex flex-col items-center justify-center mt-8 relative"
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >
@@ -107,7 +107,7 @@ function App({ darkMode }) {
                   />
                 </svg>
               </div>
-              <p className="text-gray-700 mt-2">Drag your files here, file size less than 15 MB or</p>
+              <p className="text-gray-700 mt-2">Drag your files here, file size less than 15 MB</p>
               <label className="mt-4">
                 <span className="inline-block bg-orange-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-orange-600">
                   Browse File
@@ -217,7 +217,7 @@ function App({ darkMode }) {
           <div className={`bg-white shadow-lg rounded-lg p-6 text-center ${darkMode ? 'dark-mode' : 'light-mode'}`}>
             <div className="text-orange-500 mb-2">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h18M3 12h18M3 17h18" />
               </svg>
             </div>
             <h3 className="text-xl font-bold mb-2">Multiple File Conversions</h3>
