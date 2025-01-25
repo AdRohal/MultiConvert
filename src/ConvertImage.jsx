@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import './Convert.css'; // Import the CSS file for background image
+import './Convert.css';
 
 const ConvertImage = ({ darkMode }) => {
   const [file, setFile] = useState(null);
@@ -54,16 +54,45 @@ const ConvertImage = ({ darkMode }) => {
     return formats.filter((fmt) => fmt !== fileExt);
   };
 
+  const handleReset = () => {
+    setFile(null);
+    setFormat("jpg");
+    setConvertedFile(null);
+  };
+
   return (
     <div className={`flex items-center justify-center ${darkMode ? 'dark-mode' : 'light-mode'} bg-orange-transparent`} style={{ height: '79vh' }}>
       <div className={`max-w-xs mx-auto text-center ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} rounded-lg`} style={{ padding: '30px' }}>
         <h2 className="mb-6 text-2xl font-bold">Image Converter</h2>
-        <input
-          type="file"
-          accept=".png,.jpg,.jpeg"
-          onChange={handleFileUpload}
-          className={`mb-4 block w-full text-sm ${darkMode ? 'text-gray-500' : 'text-gray-700'} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600`}
-        />
+        <div className="relative">
+          <input
+            type="file"
+            accept=".png,.jpg,.jpeg"
+            onChange={handleFileUpload}
+            className={`mb-4 block w-full text-sm ${darkMode ? 'text-gray-500' : 'text-gray-700'} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600`}
+          />
+          {file && (
+            <button
+              className="absolute top-2 right-2 bg-transparent text-red-500 px-2 py-1 rounded hover:bg-red-100 flex items-center"
+              onClick={handleReset}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
 
         <div className="mb-4">
           <label htmlFor="format" className="mr-2">Choose format:</label>

@@ -56,6 +56,7 @@ def convert_file():
             converted_file_path = os.path.join(CONVERTED_FOLDER, converted_filename)
             if format in ['jpg', 'jpeg']:
                 image = image.convert("RGB")  # Ensure the image is in RGB mode for JPG conversion
+                format = 'JPEG'  # Use 'JPEG' instead of 'JPG'
             image.save(converted_file_path, format=format.upper() if format != 'ico' else 'ICO')
 
             app.logger.info(f"Successfully converted {filename} to {format.upper()}")
