@@ -31,11 +31,6 @@ function Footer({ darkMode }) {
         </div>
         <div className="w-full md:w-2/3 text-center md:text-right">
           <p className={`${darkMode ? 'text-gray-300' : 'text-orange-500'}`}>&copy; 2024 Multi-Convert. All rights reserved.</p>
-          <div className="flex justify-center md:justify-end mt-4">
-            <a href="/privacy-policy" className={`mx-2 ${darkMode ? 'text-gray-300 hover:underline' : 'text-orange-500 hover:underline'}`}>Privacy Policy</a>
-            <a href="/terms-of-service" className={`mx-2 ${darkMode ? 'text-gray-300 hover:underline' : 'text-orange-500 hover:underline'}`}>Terms of Service</a>
-            <a href="/contact" className={`mx-2 ${darkMode ? 'text-gray-300 hover:underline' : 'text-orange-500 hover:underline'}`}>Contact Us</a>
-          </div>
           <div className="mt-4">
             <p className={`${darkMode ? 'text-gray-300' : 'text-orange-500'}`}>Created by AdRohal</p>
             <a href="https://www.linkedin.com/in/adrohal" className={`${darkMode ? 'text-gray-300 hover:underline' : 'text-orange-500 hover:underline'}`}>LinkedIn</a>
